@@ -5,12 +5,13 @@ import pronouncing
 from textblob import TextBlob
 from collections import defaultdict
 import string
-import numpy as np
 import sys
 import os
 
-# Add the parent directory to sys.path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Ensure parent directory is importable for vocabulary package
+_parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _parent_dir not in sys.path:
+    sys.path.insert(0, _parent_dir)
 
 from vocabulary import (
     nature_words,
@@ -21,14 +22,37 @@ from vocabulary import (
 
 class PoetryAnalyzer:
     def __init__(self):
-        """Initialize the poetry analyzer with required NLP tools"""
-        self.nlp = spacy.load('en_core_web_sm')
+        """Initialize the poetry analyzer with required NLP tools.
+
+        Raises:
+            OSError: If spaCy model 'en_core_web_sm' is not installed.
+                     Install it with: python -m spacy download en_core_web_sm
+        """
+        try:
+            self.nlp = spacy.load('en_core_web_sm')
+        except OSError:
+            raise OSError(
+                "spaCy model 'en_core_web_sm' not found. "
+                "Install it with: python -m spacy download en_core_web_sm"
+            )
         self.pos_to_words = defaultdict(list)
         self.rhyme_dict = defaultdict(list)
         self.syllable_patterns = []
         
     def count_syllables(self, word):
-        """Count syllables in a word using pronouncing dictionary"""
+        """Count syllables in a word using pronouncing dictionary.
+
+        Args:
+            word: A single word string.
+
+        Returns:
+            int: Syllable count (minimum 1).
+        """
+        if not word or not isinstance(word, str):
+            return 1
+        word = word.strip()
+        if not word:
+            return 1
         try:
             phones = pronouncing.phones_for_word(word)
             if phones:
@@ -46,11 +70,20 @@ class PoetryAnalyzer:
             if word.endswith('e'):
                 count -= 1
             return max(1, count)
-        except:
+        except (IndexError, KeyError, ValueError):
             return 1
     
     def analyze_rhyme_scheme(self, poem):
-        """Detect the rhyme scheme of a poem"""
+        """Detect the rhyme scheme of a poem.
+
+        Args:
+            poem: Multi-line poem string.
+
+        Returns:
+            str: Rhyme scheme letters (e.g. 'ABAB'), empty string if poem is empty.
+        """
+        if not poem or not isinstance(poem, str) or not poem.strip():
+            return ''
         def clean_word(word):
             return word.lower().strip(string.punctuation)
         
@@ -77,7 +110,12 @@ class PoetryAnalyzer:
         return ''.join(rhyme_scheme)
     
     def analyze_imagery(self, poem):
-        """Analyze types of imagery used in the poem"""
+        """Analyze types of imagery used in the poem.
+
+        Returns empty dict for empty/invalid input.
+        """
+        if not poem or not isinstance(poem, str) or not poem.strip():
+            return {}
         imagery = defaultdict(list)
         doc = self.nlp(poem.lower())
         
@@ -102,7 +140,12 @@ class PoetryAnalyzer:
         return dict(imagery)
     
     def analyze_sentiment(self, poem):
-        """Analyze the emotional tone of the poem"""
+        """Analyze the emotional tone of the poem.
+
+        Returns neutral sentiment for empty/invalid input.
+        """
+        if not poem or not isinstance(poem, str) or not poem.strip():
+            return {'polarity': 0.0, 'subjectivity': 0.0, 'emotion_count': {}}
         blob = TextBlob(poem)
         sentiment = {
             'polarity': blob.sentiment.polarity,

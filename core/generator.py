@@ -2,12 +2,13 @@
 
 import random
 from collections import defaultdict
-import numpy as np
 import sys
 import os
 
-# Add the parent directory to sys.path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Ensure parent directory is importable for vocabulary package
+_parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _parent_dir not in sys.path:
+    sys.path.insert(0, _parent_dir)
 
 from vocabulary import (
     nature_words,
@@ -153,7 +154,7 @@ class PoetryGenerator:
 
         try:
             return template.format(*words)
-        except:
+        except (IndexError, KeyError):
             return self._create_simple_phrase(syllables, mood)
 
     def _create_simple_phrase(self, syllables, mood=None):
@@ -189,7 +190,7 @@ class PoetryGenerator:
                 metaphor = self._create_metaphor(mood)
                 if self.analyzer.count_syllables(metaphor) <= syllables:
                     return metaphor
-            except:
+            except (IndexError, KeyError, ValueError):
                 pass
 
         # Try image phrase
@@ -198,7 +199,7 @@ class PoetryGenerator:
                 image = self._create_image_phrase(syllables, mood)
                 if self.analyzer.count_syllables(image) <= syllables:
                     return image
-            except:
+            except (IndexError, KeyError, ValueError):
                 pass
 
         # Standard line generation
@@ -245,7 +246,7 @@ class PoetryGenerator:
                 current_syllables = sum(self.analyzer.count_syllables(w) for w in words[:-1])
                 if current_syllables + self.analyzer.count_syllables(end_word) <= syllables:
                     words[-1] = end_word
-            except:
+            except (IndexError, KeyError, ValueError):
                 pass
 
         return ' '.join(words)
