@@ -51,3 +51,7 @@ poetry_system/
 ├── vocabulary/            # Mood-categorized word lists
 └── simple-version/        # Simplified standalone version
 ```
+
+
+---
+*Built with AI assistance from [Claude (Anthropic)](https://claude.com/).*
