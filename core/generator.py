@@ -77,7 +77,7 @@ class PoetryGenerator:
         ]
 
         categories = ['nature', 'emotion', 'abstract', 'sensory']
-        if mood:
+        if mood in categories:
             primary = mood
             secondary = random.choice([c for c in categories if c != mood])
         else:

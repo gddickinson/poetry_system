@@ -57,3 +57,14 @@ def test_haiku_lines_never_exceed_their_syllables(generator):
         lines = generator.generate_haiku().split('\n')
         for line, target in zip(lines, [5, 7, 5]):
             assert sum(count_syllables(w) for w in line.split()) <= target, (seed, line)
+
+
+def test_unknown_mood_does_not_add_an_empty_category(generator):
+    """_create_metaphor indexed the word cache (a defaultdict) with any mood, so an unknown mood such as
+    'melancholy' (named in the README) created an empty category that later lines could pick, giving
+    the fallback line 'gentle wind'."""
+    keys = list(generator.word_cache)
+    for seed in range(20):
+        random.seed(seed)
+        generator.generate_free_verse(num_lines=6, mood='melancholy')
+    assert list(generator.word_cache) == keys
