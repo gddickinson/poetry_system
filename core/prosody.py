@@ -23,14 +23,15 @@ def count_syllables(word):
     if not word:
         return 1
     try:
-        phones = pronouncing.phones_for_word(word)
+        # Look the word up as written, then without surrounding punctuation ("fire," -> "fire")
+        phones = pronouncing.phones_for_word(word) or pronouncing.phones_for_word(clean_word(word))
         if phones:
             return len(pronouncing.stresses(phones[0]))
 
         # Fallback syllable counting
         count = 0
         vowels = 'aeiouy'
-        word = word.lower().strip('.,!?')
+        word = clean_word(word)
         if word[0] in vowels:
             count += 1
         for index in range(1, len(word)):
