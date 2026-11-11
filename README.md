@@ -50,7 +50,48 @@ poetry_system/
 │   ├── analyzer.py        # PoetryAnalyzer (adds imagery and sentiment)
 │   └── generator.py       # PoetryGenerator (haiku, sonnet, free verse)
 ├── vocabulary/            # Mood-categorized word lists
+├── web/                   # FastAPI web app + static front end (run_web.py)
+├── scripts/               # static-site build, screenshots, JS fixture
 └── simple-version/        # Simplified standalone version
+```
+
+
+## Web interface and static site
+
+Live site (after the first push to `main`): https://gddickinson.github.io/poetry_system/
+
+| Home | Compose |
+|---|---|
+| ![Home page](docs/img/home.png) | ![Compose a sonnet](docs/img/compose_sonnet.png) |
+| **Analyse** | **Gallery** |
+| ![Analyse a poem](docs/img/analyse.png) | ![Gallery of samples](docs/img/gallery.png) |
+
+Pages: **Compose** (haiku, sonnet, free verse; mood and seed), **Analyse** (paste a poem: syllables per line, rhyme
+scheme, stress patterns; imagery and sentiment on the local app), **Gallery** (the README example output, the poems
+quoted in the code and seeded samples), **About**.
+
+### Run the web app
+
+```bash
+pip install -r requirements-web.txt
+python run_web.py            # http://127.0.0.1:8139
+```
+
+spaCy, TextBlob and `en_core_web_sm` are optional for the web app: install them (see Requirements) to get imagery and
+sentiment on the Analyse page.
+
+### Static site
+
+`python scripts/build_static.py` writes `site/`, published to GitHub Pages by `.github/workflows/pages.yml` on every
+push to `main` (one-time setup: Settings -> Pages -> Source: GitHub Actions). On the static site the generator and the
+syllable, rhyme and metre code run in the browser as a JavaScript port (`web/static/pyrandom.js`, `prosody_engine.js`,
+`generator_engine.js`) that reproduces Python's `random` and gives the same poem as the Python for the same seed;
+`web/static/engine.test.mjs` checks this against `tests/fixtures/poem_fixture.json`
+(regenerate with `python scripts/make_poem_fixture.py`). Imagery and sentiment need the local app.
+
+```bash
+python -m pytest -q tests/test_web.py tests/test_prosody.py   # web, fixture and JS-engine tests (no spaCy needed)
+python -m pytest -q                                            # everything (needs spaCy + en_core_web_sm)
 ```
 
 

@@ -1,0 +1,23 @@
+/* Poetry System: ink-violet accent on the shared neon theme, plus page styles. */
+:root { --accent:#c39bff; --accent2:#ff7eb6; --accent3:#7fd6ff; --glow:rgba(195,155,255,.14); }
+button, .btn, .seg button.on { color:#150a24; }
+.mark { border-radius:50% 50% 50% 0; }
+.poem { font:19px/1.75 Georgia,"Iowan Old Style","Times New Roman",serif; color:var(--ink); margin:6px 0; }
+.poem .ln { display:grid; grid-template-columns:2.2em 1fr auto; gap:10px; align-items:baseline; }
+.poem .ln .no { font:12px var(--mono); color:var(--mute); text-align:right; }
+.poem .ln .meta { font:12px var(--mono); color:var(--mute); white-space:nowrap; }
+.poem .ln .meta b { color:var(--accent); }
+.poem.plain .ln { grid-template-columns:1fr; }
+.stress { font:13px var(--mono); letter-spacing:.12em; color:var(--accent3); display:block; margin:-4px 0 4px; }
+.stress .s1 { color:var(--accent2); font-weight:700; } .stress .s2 { color:var(--accent); } .stress .s0 { color:var(--mute); }
+.rh { display:inline-block; min-width:1.6em; text-align:center; font:600 12px var(--mono); border-radius:3px; padding:0 4px; color:#150a24; }
+.scheme { font:600 26px var(--mono); letter-spacing:.18em; color:var(--accent); overflow-wrap:anywhere; }
+.compose { display:grid; grid-template-columns:300px 1fr; gap:20px; align-items:start; margin-top:14px; }
+.controls { background:rgba(13,10,28,.92); border:1px solid var(--line); border-radius:6px; padding:10px 16px 16px; }
+.seedrow { display:flex; gap:8px; align-items:flex-end; } .seedrow button { margin:0; white-space:nowrap; }
+.pycall { font:12px var(--mono); color:var(--mute); overflow-wrap:anywhere; }
+.gal .card pre { background:transparent; border:0; padding:0; margin:8px 0; font:16px/1.6 Georgia,serif; color:var(--ink); }
+.gal .card .src { font-size:12px; color:var(--mute); }
+.legend { font-size:13px; color:var(--mute); }
+@media (max-width:760px) { .compose { grid-template-columns:1fr; } .poem { font-size:17px; }
+  .poem .ln { grid-template-columns:1.6em 1fr; } .poem .ln .meta { grid-column:2; } }
