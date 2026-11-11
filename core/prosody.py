@@ -49,6 +49,15 @@ def clean_word(word):
     return word.lower().strip(string.punctuation)
 
 
+def rhyme_key_for(word):
+    """Key under which line endings rhyme: the CMU rhyming part of the word, else the word itself."""
+    word = clean_word(word)
+    phones = pronouncing.phones_for_word(word)
+    if phones:
+        return ('sound', pronouncing.rhyming_part(phones[0]))
+    return ('word', word)
+
+
 def analyze_rhyme_scheme(poem):
     """Detect the rhyme scheme of a poem.
 
@@ -71,9 +80,7 @@ def analyze_rhyme_scheme(poem):
         if not words:
             continue
 
-        last_word = clean_word(words[-1])
-        rhymes = pronouncing.rhymes(last_word)
-        rhyme_key = tuple(rhymes[:3]) if rhymes else last_word
+        rhyme_key = rhyme_key_for(words[-1])
 
         if rhyme_key not in rhyme_mapping:
             rhyme_mapping[rhyme_key] = chr(65 + current_rhyme)
