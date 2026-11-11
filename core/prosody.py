@@ -99,3 +99,7 @@ class ProsodyAnalyzer:
 
     def analyze_rhyme_scheme(self, poem):
         return analyze_rhyme_scheme(poem)
+
+    def get_rhyming_words(self, word):
+        """Words in the CMU dictionary that rhyme with `word` (used by generate_sonnet)."""
+        return pronouncing.rhymes(clean_word(word))

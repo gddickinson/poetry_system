@@ -34,3 +34,16 @@ def test_rhyme_scheme_matches_words_that_rhyme():
     assert analyze_rhyme_scheme("the cat\nthe hat\nthe day\nthe way") == 'AABB'
     assert analyze_rhyme_scheme("Soft winds whisper dreams\nThrough autumn's golden branches\nTime flows like water") == 'ABC'
     assert analyze_rhyme_scheme("one xqzzy\ntwo xqzzy\nthree plorf") == 'AAB'
+
+
+def test_sonnet_generates_fourteen_lines(generator):
+    """generate_sonnet called analyzer.get_rhyming_words, which did not exist (AttributeError)."""
+    random.seed(3)
+    lines = generator.generate_sonnet(mood='nature').split('\n')
+    assert len(lines) == 14 and all(line.strip() for line in lines)
+
+
+def test_get_rhyming_words():
+    words = ProsodyAnalyzer().get_rhyming_words('Day,')
+    assert 'way' in words and 'day' not in words
+    assert ProsodyAnalyzer().get_rhyming_words('xqzzy') == []
