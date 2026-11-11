@@ -1,10 +1,6 @@
 """Poetry analysis module for detecting rhythm, rhyme, and other poetic elements."""
 
-import spacy
-import pronouncing
-from textblob import TextBlob
 from collections import defaultdict
-import string
 import sys
 import os
 
@@ -19,8 +15,16 @@ from vocabulary import (
     abstract_words,
     sensory_words
 )
+from core.prosody import ProsodyAnalyzer
 
-class PoetryAnalyzer:
+
+class PoetryAnalyzer(ProsodyAnalyzer):
+    """Full analyzer: syllables and rhyme (from ProsodyAnalyzer) plus imagery and sentiment.
+
+    spaCy and TextBlob are imported when needed, so the pure prosody helpers (and the
+    generator and web interface) work without the NLP models installed.
+    """
+
     def __init__(self):
         """Initialize the poetry analyzer with required NLP tools.
 
@@ -28,6 +32,7 @@ class PoetryAnalyzer:
             OSError: If spaCy model 'en_core_web_sm' is not installed.
                      Install it with: python -m spacy download en_core_web_sm
         """
+        import spacy
         try:
             self.nlp = spacy.load('en_core_web_sm')
         except OSError:
@@ -39,76 +44,6 @@ class PoetryAnalyzer:
         self.rhyme_dict = defaultdict(list)
         self.syllable_patterns = []
         
-    def count_syllables(self, word):
-        """Count syllables in a word using pronouncing dictionary.
-
-        Args:
-            word: A single word string.
-
-        Returns:
-            int: Syllable count (minimum 1).
-        """
-        if not word or not isinstance(word, str):
-            return 1
-        word = word.strip()
-        if not word:
-            return 1
-        try:
-            phones = pronouncing.phones_for_word(word)
-            if phones:
-                return len(pronouncing.stresses(phones[0]))
-            
-            # Fallback syllable counting
-            count = 0
-            vowels = 'aeiouy'
-            word = word.lower().strip('.,!?')
-            if word[0] in vowels:
-                count += 1
-            for index in range(1, len(word)):
-                if word[index] in vowels and word[index-1] not in vowels:
-                    count += 1
-            if word.endswith('e'):
-                count -= 1
-            return max(1, count)
-        except (IndexError, KeyError, ValueError):
-            return 1
-    
-    def analyze_rhyme_scheme(self, poem):
-        """Detect the rhyme scheme of a poem.
-
-        Args:
-            poem: Multi-line poem string.
-
-        Returns:
-            str: Rhyme scheme letters (e.g. 'ABAB'), empty string if poem is empty.
-        """
-        if not poem or not isinstance(poem, str) or not poem.strip():
-            return ''
-        def clean_word(word):
-            return word.lower().strip(string.punctuation)
-        
-        lines = [line.strip() for line in poem.split('\n') if line.strip()]
-        rhyme_scheme = []
-        rhyme_mapping = {}
-        current_rhyme = 0
-        
-        for line in lines:
-            words = line.split()
-            if not words:
-                continue
-            
-            last_word = clean_word(words[-1])
-            rhymes = pronouncing.rhymes(last_word)
-            rhyme_key = tuple(rhymes[:3]) if rhymes else last_word
-            
-            if rhyme_key not in rhyme_mapping:
-                rhyme_mapping[rhyme_key] = chr(65 + current_rhyme)
-                current_rhyme += 1
-            
-            rhyme_scheme.append(rhyme_mapping[rhyme_key])
-        
-        return ''.join(rhyme_scheme)
-    
     def analyze_imagery(self, poem):
         """Analyze types of imagery used in the poem.
 
@@ -146,6 +81,7 @@ class PoetryAnalyzer:
         """
         if not poem or not isinstance(poem, str) or not poem.strip():
             return {'polarity': 0.0, 'subjectivity': 0.0, 'emotion_count': {}}
+        from textblob import TextBlob
         blob = TextBlob(poem)
         sentiment = {
             'polarity': blob.sentiment.polarity,
