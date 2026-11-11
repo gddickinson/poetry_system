@@ -174,6 +174,10 @@ class PoetryGenerator:
         # Ultimate fallback
         return "gentle"
 
+    def _phrase_syllables(self, phrase):
+        """Syllables in a multi-word phrase: the sum over its words."""
+        return sum(self.analyzer.count_syllables(w) for w in phrase.split())
+
     def generate_line(self, syllables, mood=None, end_word=None, line_type='standard'):
         """Generate a single line of poetry with specified constraints"""
         # Handle very small syllable counts
@@ -188,7 +192,7 @@ class PoetryGenerator:
         if line_type == 'metaphor' and random.random() < 0.7:
             try:
                 metaphor = self._create_metaphor(mood)
-                if self.analyzer.count_syllables(metaphor) <= syllables:
+                if self._phrase_syllables(metaphor) <= syllables:
                     return metaphor
             except (IndexError, KeyError, ValueError):
                 pass
@@ -197,7 +201,7 @@ class PoetryGenerator:
         if line_type == 'image' or random.random() < 0.3:
             try:
                 image = self._create_image_phrase(syllables, mood)
-                if self.analyzer.count_syllables(image) <= syllables:
+                if self._phrase_syllables(image) <= syllables:
                     return image
             except (IndexError, KeyError, ValueError):
                 pass

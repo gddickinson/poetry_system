@@ -47,3 +47,13 @@ def test_get_rhyming_words():
     words = ProsodyAnalyzer().get_rhyming_words('Day,')
     assert 'way' in words and 'day' not in words
     assert ProsodyAnalyzer().get_rhyming_words('xqzzy') == []
+
+
+def test_haiku_lines_never_exceed_their_syllables(generator):
+    """Metaphor and image phrases were checked with count_syllables on the whole phrase (one 'word'), which
+    missed the dictionary and used the vowel guess, so lines like 'raven hawk in the violet' (8) passed as 7."""
+    for seed in range(200):
+        random.seed(seed)
+        lines = generator.generate_haiku().split('\n')
+        for line, target in zip(lines, [5, 7, 5]):
+            assert sum(count_syllables(w) for w in line.split()) <= target, (seed, line)
