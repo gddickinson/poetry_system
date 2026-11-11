@@ -68,3 +68,11 @@ def test_unknown_mood_does_not_add_an_empty_category(generator):
         random.seed(seed)
         generator.generate_free_verse(num_lines=6, mood='melancholy')
     assert list(generator.word_cache) == keys
+
+
+def test_analyze_meter_stress_patterns():
+    """README listed meter analysis but core had no analyze_meter (it was only in simple-version)."""
+    poem = "Shall I compare thee to a summer's day?\n\nThe cat, the hat\n --"
+    assert ProsodyAnalyzer().analyze_meter(poem) == [[1, 1, 0, 1, 1, 1, 0, 1, 0, 1], [0, 1, 0, 1], []]
+    assert ProsodyAnalyzer().analyze_meter('') == []
+    assert ProsodyAnalyzer().analyze_meter('xqzzyab barfoozle') == [[1, 1, 0]]

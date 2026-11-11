@@ -1,12 +1,12 @@
 # Poetry System
 
-An NLP-based poetry analysis and generation system using spaCy, TextBlob, and the pronouncing library. Generates haiku, tanka, sonnets, and free verse with mood-based vocabulary selection.
+An NLP-based poetry analysis and generation system using spaCy, TextBlob, and the pronouncing library. Generates haiku, sonnets and free verse with mood-based vocabulary selection (a tanka template is defined in the generator but has no `generate_tanka` method yet).
 
 ## Features
 
-- **Poetry generation** -- haiku, tanka, sonnet, free verse
-- **Poetry analysis** -- meter, rhyme scheme, sentiment, imagery detection
-- **Mood-based generation** -- nature, love, melancholy, joy themes
+- **Poetry generation** -- haiku, sonnet, free verse
+- **Poetry analysis** -- meter (per-line CMU stress patterns), rhyme scheme, sentiment, imagery detection
+- **Mood-based generation** -- nature, emotion, abstract, sensory (the four vocabulary categories)
 - **Syllable counting** using the pronouncing library (CMU dictionary)
 - **Vocabulary system** with mood-categorized word lists
 
@@ -31,7 +31,7 @@ generator = PoetryGenerator(analyzer)
 
 # Generate poems
 print(generator.generate_haiku(mood='nature'))
-print(generator.generate_free_verse(mood='melancholy'))
+print(generator.generate_free_verse(mood='emotion'))
 ```
 
 ```bash
@@ -46,7 +46,8 @@ poetry_system/
 ├── main.py                # Example usage and demo
 ├── setup.py               # Package setup
 ├── core/
-│   ├── analyzer.py        # PoetryAnalyzer (meter, rhyme, sentiment)
+│   ├── prosody.py         # syllables, rhyme scheme, meter (no spaCy needed)
+│   ├── analyzer.py        # PoetryAnalyzer (adds imagery and sentiment)
 │   └── generator.py       # PoetryGenerator (haiku, sonnet, free verse)
 ├── vocabulary/            # Mood-categorized word lists
 └── simple-version/        # Simplified standalone version

@@ -1,4 +1,4 @@
-"""Pure prosody helpers (CMU dictionary via `pronouncing`): syllables and rhyme scheme.
+"""Pure prosody helpers (CMU dictionary via `pronouncing`): syllables, rhyme scheme and metre (stress patterns).
 
 No spaCy or TextBlob here, so the generator and the web interface can use these without the heavy NLP models.
 `PoetryAnalyzer` (core/analyzer.py) inherits from `ProsodyAnalyzer` and adds imagery and sentiment analysis.
@@ -91,6 +91,35 @@ def analyze_rhyme_scheme(poem):
     return ''.join(rhyme_scheme)
 
 
+def analyze_meter(poem):
+    """Stress pattern of each line from the CMU dictionary (restored from simple-version/poetry-system.py).
+
+    Each word contributes its CMU stress digits (0 unstressed, 1 primary, 2 secondary stress); a word that
+    is not in the dictionary gets an alternating 1, 0, ... pattern over its estimated syllables.
+
+    Returns:
+        list[list[int]]: one stress list per non-empty line; [] for empty input.
+    """
+    if not poem or not isinstance(poem, str) or not poem.strip():
+        return []
+    patterns = []
+    for line in (ln.strip() for ln in poem.split('\n')):
+        if not line:
+            continue
+        pattern = []
+        for word in (clean_word(w) for w in line.split()):
+            if not any(c.isalpha() for c in word):
+                continue
+            phones = pronouncing.phones_for_word(word)
+            if phones:
+                pattern.extend(int(c) for c in pronouncing.stresses(phones[0]))
+            else:
+                syllables = count_syllables(word)
+                pattern.extend([1, 0] * (syllables // 2) + ([1] if syllables % 2 else []))
+        patterns.append(pattern)
+    return patterns
+
+
 class ProsodyAnalyzer:
     """Syllable and rhyme analysis without NLP models; enough for PoetryGenerator."""
 
@@ -99,6 +128,9 @@ class ProsodyAnalyzer:
 
     def analyze_rhyme_scheme(self, poem):
         return analyze_rhyme_scheme(poem)
+
+    def analyze_meter(self, poem):
+        return analyze_meter(poem)
 
     def get_rhyming_words(self, word):
         """Words in the CMU dictionary that rhyme with `word` (used by generate_sonnet)."""

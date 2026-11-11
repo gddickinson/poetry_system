@@ -7,8 +7,8 @@ A Python-based system for generating and analyzing poetry using natural language
 ### Poetry Generation
 - Multiple poetic forms:
   - Haiku (5-7-5 syllables)
+  - Sonnet (14 lines of 10 syllables, ABABCDCDEFEFGG end-word rhymes where they fit)
   - Free Verse
-  - Custom forms
 - Diverse vocabulary categories:
   - Nature words
   - Emotional expressions
@@ -25,7 +25,7 @@ A Python-based system for generating and analyzing poetry using natural language
 - Imagery analysis
 - Sentiment analysis
 - Syllable counting
-- Literary device identification
+- Meter: per-line stress patterns from the CMU dictionary
 
 ## Installation
 
@@ -128,7 +128,7 @@ The system uses categorized vocabulary sets:
 2. Imagery categorization across multiple domains
 3. Sentiment analysis using TextBlob
 4. Syllable counting with fallback mechanisms
-5. Literary device identification
+5. Meter as per-line stress patterns (`analyze_meter`)
 
 ## Contributing
 
@@ -144,7 +144,7 @@ Please feel free to submit issues and pull requests.
 ## Future Enhancements
 
 Planned features:
-- More poetic forms (sonnet, tanka, etc.)
+- More poetic forms (tanka: template defined, no generator method yet)
 - Enhanced metaphor generation
 - Improved semantic coherence
 - Interactive poem evolution
