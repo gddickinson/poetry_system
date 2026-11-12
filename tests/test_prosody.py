@@ -83,3 +83,15 @@ def test_rhyme_scheme_uses_every_pronunciation():
     assert analyze_rhyme_scheme("the dog\nthe fog") == 'AA'
     assert analyze_rhyme_scheme("the fog\nthe bog\nthe dog") == 'AAA'
     assert analyze_rhyme_scheme("I saw a bat\nI looked at\nthe dog\nthe fog") == 'AABB'
+
+
+def test_generate_tanka_five_lines_within_syllables(generator):
+    """README and the generator's templates had a tanka (5-7-5-7-7) but no generate_tanka method."""
+    for seed in range(100):
+        random.seed(seed)
+        lines = generator.generate_tanka().split('\n')
+        assert len(lines) == 5
+        for line, target in zip(lines, [5, 7, 5, 7, 7]):
+            assert line.strip() and sum(count_syllables(w) for w in line.split()) <= target, (seed, line)
+    random.seed(1)
+    assert len(generator.generate_tanka(mood='nature').split('\n')) == 5

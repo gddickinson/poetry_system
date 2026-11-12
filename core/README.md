@@ -7,6 +7,7 @@ A Python-based system for generating and analyzing poetry using natural language
 ### Poetry Generation
 - Multiple poetic forms:
   - Haiku (5-7-5 syllables)
+  - Tanka (5-7-5-7-7 syllables)
   - Sonnet (14 lines of 10 syllables, ABABCDCDEFEFGG end-word rhymes where they fit)
   - Free Verse
 - Diverse vocabulary categories:
@@ -144,7 +145,7 @@ Please feel free to submit issues and pull requests.
 ## Future Enhancements
 
 Planned features:
-- More poetic forms (tanka: template defined, no generator method yet)
+- More poetic forms (limerick, villanelle, ...)
 - Enhanced metaphor generation
 - Improved semantic coherence
 - Interactive poem evolution

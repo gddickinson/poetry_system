@@ -268,6 +268,19 @@ class PoetryGenerator:
 
         return '\n'.join(lines)
 
+    def generate_tanka(self, mood=None):
+        """Generate a tanka (5-7-5-7-7), built like generate_haiku from the tanka template"""
+        structure = self.templates['tanka']['structure']
+        focus = self.templates['tanka']['focus']
+
+        lines = []
+        for i, syllables in enumerate(structure):
+            line_type = 'image' if i == 1 else 'standard'
+            mood_for_line = mood or focus[i % len(focus)]
+            lines.append(self.generate_line(syllables, mood_for_line, line_type=line_type))
+
+        return '\n'.join(lines)
+
     def generate_free_verse(self, num_lines=None, mood=None):
         """Generate free verse poetry"""
         if not num_lines:

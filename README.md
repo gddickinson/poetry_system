@@ -1,10 +1,10 @@
 # Poetry System
 
-An NLP-based poetry analysis and generation system using spaCy, TextBlob, and the pronouncing library. Generates haiku, sonnets and free verse with mood-based vocabulary selection (a tanka template is defined in the generator but has no `generate_tanka` method yet).
+An NLP-based poetry analysis and generation system using spaCy, TextBlob, and the pronouncing library. Generates haiku, tanka, sonnets and free verse with mood-based vocabulary selection.
 
 ## Features
 
-- **Poetry generation** -- haiku, sonnet, free verse
+- **Poetry generation** -- haiku, tanka, sonnet, free verse
 - **Poetry analysis** -- meter (per-line CMU stress patterns), rhyme scheme, sentiment, imagery detection
 - **Mood-based generation** -- nature, emotion, abstract, sensory (the four vocabulary categories)
 - **Syllable counting** using the pronouncing library (CMU dictionary)
@@ -48,7 +48,7 @@ poetry_system/
 ├── core/
 │   ├── prosody.py         # syllables, rhyme scheme, meter (no spaCy needed)
 │   ├── analyzer.py        # PoetryAnalyzer (adds imagery and sentiment)
-│   └── generator.py       # PoetryGenerator (haiku, sonnet, free verse)
+│   └── generator.py       # PoetryGenerator (haiku, tanka, sonnet, free verse)
 ├── vocabulary/            # Mood-categorized word lists
 ├── web/                   # FastAPI web app + static front end (run_web.py)
 ├── scripts/               # static-site build, screenshots, JS fixture
@@ -66,7 +66,7 @@ Live site (after the first push to `main`): https://gddickinson.github.io/poetry
 | **Analyse** | **Gallery** |
 | ![Analyse a poem](docs/img/analyse.png) | ![Gallery of samples](docs/img/gallery.png) |
 
-Pages: **Compose** (haiku, sonnet, free verse; mood and seed), **Analyse** (paste a poem: syllables per line, rhyme
+Pages: **Compose** (haiku, tanka, sonnet, free verse; mood and seed), **Analyse** (paste a poem: syllables per line, rhyme
 scheme, stress patterns; imagery and sentiment on the local app), **Gallery** (the README example output, the poems
 quoted in the code and seeded samples), **About**.
 

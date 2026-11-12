@@ -134,6 +134,12 @@ export class PoetryGenerator {
       i === 1 ? 'image' : 'standard')).join('\n');
   }
 
+  generateTanka(mood = null) {
+    const { structure, focus } = TEMPLATES.tanka;
+    return structure.map((n, i) => this.generateLine(n, mood || focus[i % focus.length], null,
+      i === 1 ? 'image' : 'standard')).join('\n');
+  }
+
   generateFreeVerse(numLines = null, mood = null) {
     const t = TEMPLATES.free_verse, r = this.rng;
     if (!numLines) numLines = r.randint(t.min_lines, t.max_lines);
@@ -169,14 +175,15 @@ export class PoetryGenerator {
     return lines.join('\n');
   }
 
-  // form: 'haiku' | 'sonnet' | 'free_verse' (the forms PoetryGenerator has methods for)
+  // form: 'haiku' | 'tanka' | 'sonnet' | 'free_verse' (the forms PoetryGenerator has methods for)
   generate(form, { mood = null, numLines = null } = {}) {
     if (form === 'haiku') return this.generateHaiku(mood);
+    if (form === 'tanka') return this.generateTanka(mood);
     if (form === 'sonnet') return this.generateSonnet(mood);
     if (form === 'free_verse') return this.generateFreeVerse(numLines, mood);
     throw new Error('Unknown form: ' + form);
   }
 }
 
-export const FORMS = ['haiku', 'sonnet', 'free_verse'];
+export const FORMS = ['haiku', 'tanka', 'sonnet', 'free_verse'];
 export const MOODS = ['nature', 'emotion', 'abstract', 'sensory'];

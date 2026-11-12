@@ -9,7 +9,7 @@ route('home', async () => {
   <section class="hero">
     <p class="kicker">computational poetry · CMU pronouncing dictionary</p>
     <h1 class="glow">Poetry System</h1>
-    <p class="lead">Generate haiku, sonnets and free verse from mood-categorised vocabularies, and analyse any poem's
+    <p class="lead">Generate haiku, tanka, sonnets and free verse from mood-categorised vocabularies, and analyse any poem's
       syllables, rhyme scheme and metre. The generator and prosody code are the repo's Python; on this site they run as a
       JavaScript port that gives the same poem for the same seed.</p>
     <a class="btn" href="#/compose">Compose a poem</a><a class="btn alt" href="#/analyse">Analyse a poem</a>
@@ -22,7 +22,7 @@ route('home', async () => {
   </div>
   <div class="two">
     <div class="grid">
-      <a class="card" href="#/compose"><b>Compose</b><small>haiku · sonnet · free verse</small>
+      <a class="card" href="#/compose"><b>Compose</b><small>haiku · tanka · sonnet · free verse</small>
         <span>Pick a form, a mood and a seed; every line shows its syllables and stress pattern.</span></a>
       <a class="card" href="#/analyse"><b>Analyse</b><small>syllables · rhyme · metre</small>
         <span>Paste a poem to see syllables per line, the rhyme scheme and CMU stress patterns.</span></a>

@@ -11,7 +11,7 @@ from web.poems import MOODS, generate
 
 ROOT = Path(__file__).resolve().parent.parent
 
-SEEDED = ([("haiku", m, s) for m in MOODS for s in (1, 2)] + [("haiku", None, 7)]
+SEEDED = ([("haiku", m, s) for m in MOODS for s in (1, 2)] + [("haiku", None, 7), ("tanka", None, 4), ("tanka", "nature", 8)]
           + [("free_verse", m, 3) for m in ("nature", "emotion")] + [("sonnet", None, 5), ("sonnet", "nature", 11)])
 
 

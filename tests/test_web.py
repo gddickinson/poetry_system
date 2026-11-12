@@ -69,7 +69,7 @@ def test_generate_matches_python_generator():
     assert len(sonnet["lines"]) == 14
 
 
-@pytest.mark.parametrize("body", [{"form": "tanka"}, {"form": "haiku", "mood": "melancholy"}, {"seed": -1}])
+@pytest.mark.parametrize("body", [{"form": "limerick"}, {"form": "haiku", "mood": "melancholy"}, {"seed": -1}])
 def test_generate_rejects_bad_input(body):
     assert client.post("/api/generate", json=body).status_code in (400, 422)
 

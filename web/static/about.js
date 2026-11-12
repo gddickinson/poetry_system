@@ -17,8 +17,6 @@ route('about', async () => {
     image phrases ("where {} meets {}", ...).</p>
   <table><tr><th>Form</th><th>What the generator does</th></tr>
     ${Object.entries(info.forms).map(([f, d]) => `<tr><td>${FORM_NAMES[f]}</td><td>${esc(d)}</td></tr>`).join('')}</table>
-  <p class="small mute">A tanka template (5-7-5-7-7) is defined in the generator but has no generate method yet, so it is
-    not offered here.</p>
 
   <h2>Analysis</h2>
   <ul>

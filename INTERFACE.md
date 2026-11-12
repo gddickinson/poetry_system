@@ -1,8 +1,8 @@
 # Poetry System -- Interface Map
 
 ## Project Overview
-NLP-based poetry analysis and generation system. Generates haiku, sonnets and free verse with mood-based vocabulary
-selection (a tanka template exists but has no generator method). Uses the pronouncing library (CMU dictionary) for
+NLP-based poetry analysis and generation system. Generates haiku, tanka, sonnets and free verse with mood-based
+vocabulary selection. Uses the pronouncing library (CMU dictionary) for
 syllables, rhyme and metre, and spaCy + TextBlob for imagery and sentiment. A FastAPI web app and a static GitHub Pages
 site (JS port of the generator and prosody code) live in `web/`.
 
@@ -21,6 +21,7 @@ site (JS port of the generator and prosody code) live in `web/`.
 
 - **`generator.py`** -- `PoetryGenerator(analyzer)` (any object with count_syllables/get_rhyming_words)
   - `generate_haiku(mood)` -- 5-7-5 syllable haiku
+  - `generate_tanka(mood)` -- 5-7-5-7-7 tanka (built like generate_haiku)
   - `generate_free_verse(num_lines, mood)` -- variable-length free verse
   - `generate_sonnet(mood)` -- 14 lines, ABABCDCDEFEFGG end-word rhymes where they fit
   - `generate_line(syllables, mood, end_word, line_type)` -- single line

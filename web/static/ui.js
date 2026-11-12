@@ -22,8 +22,8 @@ export function poemHtml(lines, { target = null, stress = true, rhyme = true } =
   }).join('')}</div>`;
 }
 
-export const FORM_NAMES = { haiku: 'Haiku', sonnet: 'Sonnet', free_verse: 'Free verse' };
-export const TARGETS = { haiku: [5, 7, 5], sonnet: 10 };
+export const FORM_NAMES = { haiku: 'Haiku', tanka: 'Tanka', sonnet: 'Sonnet', free_verse: 'Free verse' };
+export const TARGETS = { haiku: [5, 7, 5], tanka: [5, 7, 5, 7, 7], sonnet: 10 };
 
 // Python call that reproduces a seeded poem.
 export function pyCall({ form, mood, seed, num_lines }) {

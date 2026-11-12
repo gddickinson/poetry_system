@@ -16,6 +16,7 @@ import vocabulary
 
 FORMS = {
     "haiku": "Haiku: three lines of 5, 7 and 5 syllables (generate_haiku)",
+    "tanka": "Tanka: five lines of 5, 7, 5, 7 and 7 syllables (generate_tanka)",
     "sonnet": "Sonnet: 14 lines of up to 10 syllables, rhyme plan ABABCDCDEFEFGG (generate_sonnet)",
     "free_verse": "Free verse: 4 to 8 lines of 5 to 12 syllables (generate_free_verse)",
 }
@@ -40,6 +41,8 @@ def generate(form, mood=None, seed=0, num_lines=None):
         random.seed(seed)
         if form == "haiku":
             return gen.generate_haiku(mood=mood)
+        if form == "tanka":
+            return gen.generate_tanka(mood=mood)
         if form == "sonnet":
             return gen.generate_sonnet(mood=mood)
         return gen.generate_free_verse(num_lines=num_lines, mood=mood)
