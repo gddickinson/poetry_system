@@ -10,21 +10,19 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from core.analyzer import PoetryAnalyzer
 from core.generator import PoetryGenerator
 
 
 @pytest.fixture(scope='module')
-def generator():
-    """Shared generator instance."""
-    analyzer = PoetryAnalyzer()
-    return PoetryGenerator(analyzer)
+def generator(full_analyzer):
+    """Shared generator instance (skips without spaCy, see conftest.py)."""
+    return PoetryGenerator(full_analyzer)
 
 
 @pytest.fixture(scope='module')
-def analyzer():
+def analyzer(full_analyzer):
     """Shared analyzer for syllable checking."""
-    return PoetryAnalyzer()
+    return full_analyzer
 
 
 class TestGenerateHaiku:

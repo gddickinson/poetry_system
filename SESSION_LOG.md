@@ -30,6 +30,16 @@ The CMU data (135,166 pronunciations) is exported as one 2.8 MB JSON (0.9 MB gzi
 **Tests.** With spaCy: `pytest -q tests` 41 passed. Without spaCy: `tests/test_web.py tests/test_prosody.py` pass.
 `screenshots.py --static` and `--base http://127.0.0.1:8139`: all routes ok, no phone overflow.
 
-**Open questions for George.** Add `generate_tanka` (the template exists)? Sonnet rhymes come from the whole CMU
-dictionary (can end lines on obscure words); restrict to the vocabulary? Rhyme scheme uses each word's first CMU
-pronunciation only ("dog"/"fog" do not match).
+**Open questions for George.** (tanka and multi-pronunciation rhymes resolved below.) Sonnet rhymes come from the
+whole CMU dictionary (can end lines on obscure words); restrict to the vocabulary?
+
+## 2026-11-11 (later) -- follow-ups after merge
+- **Fix rhymes across pronunciations**: `analyze_rhyme_scheme` now matches a line to the first earlier line sharing a
+  CMU rhyming part in any pronunciation ("dog"/"fog" rhyme; "read" matches "led" and "reed"). JS port updated.
+- **Fix missing tanka**: `generate_tanka(mood)` from the existing 5-7-5-7-7 template, built like `generate_haiku`;
+  Tanka on the Compose page and two seeded tanka in the Gallery. Test: 100 seeds, 5 lines, each within its count.
+- **Tests skip cleanly without spaCy/TextBlob**: `tests/conftest.py` `full_analyzer` fixture (importorskip + model
+  check). Shared venv: `pytest tests` 24 passed, 19 skipped, 0 errors; spaCy venv: 43 passed.
+- Fixture regenerated (126 poems); node test 768 checks identical; 15/15 gallery samples recreated in the browser;
+  screenshots.py ok on static site and local app, 0px phone overflow.
+- Still open for George: limit sonnet rhymes to the vocabulary?

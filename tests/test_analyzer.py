@@ -10,13 +10,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from core.analyzer import PoetryAnalyzer
 
 
 @pytest.fixture(scope='module')
-def analyzer():
-    """Shared analyzer instance (loads spaCy model once)."""
-    return PoetryAnalyzer()
+def analyzer(full_analyzer):
+    """Shared analyzer instance (loads spaCy model once; skips without spaCy, see conftest.py)."""
+    return full_analyzer
 
 
 class TestCountSyllables:
