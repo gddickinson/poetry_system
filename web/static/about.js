@@ -23,7 +23,7 @@ route('about', async () => {
   <h2>Analysis</h2>
   <ul>
     <li><b>Syllables</b>: CMU Pronouncing Dictionary via <code>pronouncing</code>, with a vowel-group guess for unknown words.</li>
-    <li><b>Rhyme scheme</b>: line endings that share the CMU rhyming part get the same letter.</li>
+    <li><b>Rhyme scheme</b>: line endings that share a CMU rhyming part (in any of their listed pronunciations) get the same letter.</li>
     <li><b>Metre</b>: per-line stress patterns (<code>analyze_meter</code>, restored from the simple version).</li>
     <li><b>Imagery</b>: which words belong to the vocabulary categories (spaCy tokeniser), and <b>sentiment</b>
       (TextBlob polarity and subjectivity). These need the NLP models, so they run only in the local app.</li>

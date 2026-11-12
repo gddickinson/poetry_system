@@ -1,5 +1,5 @@
 // JavaScript port of core/prosody.py on the compact CMU dictionary exported by web/cmu_data.py:
-// count_syllables, clean_word, rhyme_key_for, analyze_rhyme_scheme, analyze_meter and get_rhyming_words
+// count_syllables, clean_word, rhyme_keys_for, analyze_rhyme_scheme, analyze_meter and get_rhyming_words
 // (pronouncing.rhymes). Node-tested against the Python on tests/fixtures/poem_fixture.json.
 
 const PUNCT = new Set('!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~');  // Python string.punctuation
@@ -65,10 +65,11 @@ export function rhymes(word) {
 }
 export const getRhymingWords = word => rhymes(cleanWord(word));
 
-export function rhymeKeyFor(word) {
+// Keys of every pronunciation's rhyming part (core/prosody.py rhyme_keys_for), else the word itself.
+export function rhymeKeysFor(word) {
   word = cleanWord(word);
   const phones = phonesForWord(word);
-  return phones.length ? 'sound:' + rhymeParts[phones[0][1]] : 'word:' + word;
+  return new Set(phones.length ? phones.map(p => 'sound:' + rhymeParts[p[1]]) : ['word:' + word]);
 }
 
 const poemLines = poem => poem.split('\n').map(pyStrip).filter(Boolean);
@@ -76,14 +77,16 @@ const isBlank = poem => !poem || typeof poem !== 'string' || !pyStrip(poem);
 
 export function analyzeRhymeScheme(poem) {
   if (isBlank(poem)) return '';
-  const mapping = new Map();
-  let out = '';
+  const seen = [];  // [keys, letter] of earlier lines, in order
+  let out = '', next = 0;
   for (const line of poemLines(poem)) {
     const words = pySplit(line);
     if (!words.length) continue;
-    const key = rhymeKeyFor(words[words.length - 1]);
-    if (!mapping.has(key)) mapping.set(key, String.fromCharCode(65 + mapping.size));
-    out += mapping.get(key);
+    const keys = rhymeKeysFor(words[words.length - 1]);
+    const hit = seen.find(([ks]) => [...keys].some(k => ks.has(k)));
+    const letter = hit ? hit[1] : String.fromCharCode(65 + next++);
+    seen.push([keys, letter]);
+    out += letter;
   }
   return out;
 }

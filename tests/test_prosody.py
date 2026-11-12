@@ -76,3 +76,10 @@ def test_analyze_meter_stress_patterns():
     assert ProsodyAnalyzer().analyze_meter(poem) == [[1, 1, 0, 1, 1, 1, 0, 1, 0, 1], [0, 1, 0, 1], []]
     assert ProsodyAnalyzer().analyze_meter('') == []
     assert ProsodyAnalyzer().analyze_meter('xqzzyab barfoozle') == [[1, 1, 0]]
+
+
+def test_rhyme_scheme_uses_every_pronunciation():
+    """'fog' is listed first as F AA1 G and 'dog' as D AO1 G; 'fog' also has F AO1 G, so they rhyme."""
+    assert analyze_rhyme_scheme("the dog\nthe fog") == 'AA'
+    assert analyze_rhyme_scheme("the fog\nthe bog\nthe dog") == 'AAA'
+    assert analyze_rhyme_scheme("I saw a bat\nI looked at\nthe dog\nthe fog") == 'AABB'

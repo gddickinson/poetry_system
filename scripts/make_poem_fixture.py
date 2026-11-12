@@ -22,7 +22,7 @@ FIXTURE = ROOT / "tests" / "fixtures" / "poem_fixture.json"
 RNG_SEEDS = [0, 1, 42, 2**31 - 1, 2**40 + 5]
 POEM_SEEDS = range(6)
 EXTRA_WORDS = ["fire,", "Hour.", "...", "summer's", "xqzzyab", "  Moon  ", "", "rhythm", "CAT!", "--dawn--", "ée"]
-EXTRA_POEMS = ["I saw a bat\nI looked at", "the cat\nthe hat\nthe day\nthe way", "one xqzzy\ntwo xqzzy\n\nthree",
+EXTRA_POEMS = ["I saw a bat\nI looked at", "the cat\nthe hat\nthe day\nthe way", "one xqzzy\ntwo xqzzy\n\nthree", "the dog\nthe fog\nthe bog\nread\nled\nreed",
                "  \n", "word -- \n  — dash line —", "Tyger Tyger, burning bright,\nIn the forests of the night;"]
 
 

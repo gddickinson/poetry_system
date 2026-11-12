@@ -10,7 +10,7 @@ site (JS port of the generator and prosody code) live in `web/`.
 
 - **`prosody.py`** -- model-free prosody (pronouncing only; no spaCy)
   - `count_syllables(word)` -- CMU dict (also without surrounding punctuation) + vowel-group fallback
-  - `clean_word(word)`, `rhyme_key_for(word)` -- CMU rhyming part, else the word
+  - `clean_word(word)`, `rhyme_keys_for(word)` -- CMU rhyming parts of all pronunciations, else the word
   - `analyze_rhyme_scheme(poem)` -- rhyme letters (ABAB etc.)
   - `analyze_meter(poem)` -- per-line CMU stress digits (restored from simple-version)
   - `ProsodyAnalyzer` -- the above as methods + `get_rhyming_words(word)`; enough for PoetryGenerator

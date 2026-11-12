@@ -28,8 +28,9 @@ route('analyse', async () => {
         `<option value="${i}">${esc(e.title)}</option>`).join('')}</select>
     </div>
     <div class="panel"><h3>Rhyme scheme</h3><div class="scheme" id="scheme">-</div>
-      <p class="small mute">Lines whose last words share the CMU "rhyming part" (stressed vowel to the end) get the same
-        letter; words not in the dictionary only match themselves.</p>
+      <p class="small mute">A line takes the letter of the first earlier line whose last word shares a CMU "rhyming
+        part" (stressed vowel to the end, any listed pronunciation), else a new letter; words not in the dictionary only
+        match themselves.</p>
       <div id="nlp"></div></div>
   </div>
   <div class="panel" id="lines" aria-live="polite"></div>

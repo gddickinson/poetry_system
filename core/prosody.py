@@ -49,13 +49,14 @@ def clean_word(word):
     return word.lower().strip(string.punctuation)
 
 
-def rhyme_key_for(word):
-    """Key under which line endings rhyme: the CMU rhyming part of the word, else the word itself."""
+def rhyme_keys_for(word):
+    """Keys under which a line ending rhymes: the CMU rhyming part of every pronunciation of the word
+    (so 'fog', listed as F AA1 G and F AO1 G, rhymes with 'dog' and 'bog'), else the word itself."""
     word = clean_word(word)
     phones = pronouncing.phones_for_word(word)
     if phones:
-        return ('sound', pronouncing.rhyming_part(phones[0]))
-    return ('word', word)
+        return {('sound', pronouncing.rhyming_part(p)) for p in phones}
+    return {('word', word)}
 
 
 def analyze_rhyme_scheme(poem):
@@ -72,7 +73,7 @@ def analyze_rhyme_scheme(poem):
 
     lines = [line.strip() for line in poem.split('\n') if line.strip()]
     rhyme_scheme = []
-    rhyme_mapping = {}
+    seen = []  # (keys, letter) of earlier lines, in order
     current_rhyme = 0
 
     for line in lines:
@@ -80,13 +81,14 @@ def analyze_rhyme_scheme(poem):
         if not words:
             continue
 
-        rhyme_key = rhyme_key_for(words[-1])
-
-        if rhyme_key not in rhyme_mapping:
-            rhyme_mapping[rhyme_key] = chr(65 + current_rhyme)
+        keys = rhyme_keys_for(words[-1])
+        # Same letter as the first earlier line sharing any pronunciation's rhyming part
+        letter = next((lt for ks, lt in seen if ks & keys), None)
+        if letter is None:
+            letter = chr(65 + current_rhyme)
             current_rhyme += 1
-
-        rhyme_scheme.append(rhyme_mapping[rhyme_key])
+        seen.append((keys, letter))
+        rhyme_scheme.append(letter)
 
     return ''.join(rhyme_scheme)
 
