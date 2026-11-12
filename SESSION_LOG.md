@@ -30,8 +30,8 @@ The CMU data (135,166 pronunciations) is exported as one 2.8 MB JSON (0.9 MB gzi
 **Tests.** With spaCy: `pytest -q tests` 41 passed. Without spaCy: `tests/test_web.py tests/test_prosody.py` pass.
 `screenshots.py --static` and `--base http://127.0.0.1:8139`: all routes ok, no phone overflow.
 
-**Open questions for George.** (tanka and multi-pronunciation rhymes resolved below.) Sonnet rhymes come from the
-whole CMU dictionary (can end lines on obscure words); restrict to the vocabulary?
+**Open questions for George.** (tanka and multi-pronunciation rhymes resolved below.) Sonnet rhymes: resolved
+below (vocabulary first).
 
 ## 2026-11-11 (later) -- follow-ups after merge
 - **Fix rhymes across pronunciations**: `analyze_rhyme_scheme` now matches a line to the first earlier line sharing a
@@ -44,4 +44,6 @@ whole CMU dictionary (can end lines on obscure words); restrict to the vocabular
   screenshots.py ok on static site and local app, 0px phone overflow.
 - Fix: the node test now reads only tests/fixtures/poem_fixture.json (which carries the CMU rows it needs, 20,857 of
   135,166) instead of spawning Python; `core/__init__` imports the analyzer lazily, so `core.prosody` loads without spaCy.
-- Still open for George: limit sonnet rhymes to the vocabulary?
+- **Fix sonnet rhymes from obscure dictionary words**: rhymes now come from the mood's word list, then the whole
+  vocabulary, and the CMU dictionary only when the vocabulary has no rhyme (68 of 700 end words in 50 seeded sonnets
+  were non-vocabulary words like "grieme" or "flickr"). JS port identical (fixture regenerated, 768 checks).

@@ -35,6 +35,7 @@ class PoetryGenerator:
             'sensory': sensory_words.get_all_sensory_words()
         }
 
+        self.vocabulary = all_words  # category -> word list, kept for sonnet rhymes
         for category, words in all_words.items():
             for word in words:
                 syllables = self.analyzer.count_syllables(word)
@@ -312,6 +313,23 @@ class PoetryGenerator:
 
         return '\n'.join(lines)
 
+    def _sonnet_rhymes(self, word, mood=None):
+        """Rhymes for a sonnet end word: from the mood's word list if it has any, else from the whole
+        vocabulary, else (only then) from the full CMU dictionary. Vocabulary order, no repeats."""
+        rhymes = self.analyzer.get_rhyming_words(word)
+        if not rhymes:
+            return []
+        rhyme_set = set(rhymes)
+        groups = []
+        if mood in self.vocabulary:
+            groups.append([mood])
+        groups.append(list(self.vocabulary))
+        for categories in groups:
+            found = [w for cat in categories for w in self.vocabulary[cat] if w in rhyme_set]
+            if found:
+                return list(dict.fromkeys(found))
+        return rhymes
+
     def generate_sonnet(self, mood=None):
         """Generate a Shakespearean sonnet"""
         lines = []
@@ -338,7 +356,7 @@ class PoetryGenerator:
 
                 # Find rhyming words for future
                 last_word = line.split()[-1]
-                rhymes = self.analyzer.get_rhyming_words(last_word)
+                rhymes = self._sonnet_rhymes(last_word, mood)
                 if rhymes:
                     rhyme_words[rhyme].extend(rhymes)
 

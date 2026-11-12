@@ -21,6 +21,7 @@ export class PoetryGenerator {
   // vocab: {nature: [...], emotion: [...], abstract: [...], sensory: [...]} as vocabulary.get_all_words()
   constructor(vocab, seed = 0) {
     this.rng = new PyRandom(seed);
+    this.vocab = vocab;  // kept for sonnet rhymes
     this.cache = new Map();  // category -> Map(syllables -> words); mirrors the nested defaultdict
     for (const [cat, words] of Object.entries(vocab)) {
       const bySyll = new Map();
@@ -156,6 +157,19 @@ export class PoetryGenerator {
     return lines.join('\n');
   }
 
+  // Rhymes for a sonnet end word: the mood's list, else the whole vocabulary, else the full CMU dictionary.
+  sonnetRhymes(word, mood = null) {
+    const rhymes = getRhymingWords(word);
+    if (!rhymes.length) return [];
+    const set = new Set(rhymes), cats = Object.keys(this.vocab);
+    const groups = this.vocab[mood] && cats.includes(mood) ? [[mood], cats] : [cats];
+    for (const g of groups) {
+      const found = [...new Set(g.flatMap(c => this.vocab[c].filter(w => set.has(w))))];
+      if (found.length) return found;
+    }
+    return rhymes;
+  }
+
   generateSonnet(mood = null) {
     const scheme = TEMPLATES.sonnet.rhyme_scheme, syllables = TEMPLATES.sonnet.structure[0];
     const rhymeWords = new Map(), lines = [];
@@ -168,7 +182,7 @@ export class PoetryGenerator {
       } else {
         const line = this.generateLine(syllables, mood, null, lineType);
         lines.push(line);
-        const parts = pySplit(line), found = getRhymingWords(parts[parts.length - 1]);
+        const parts = pySplit(line), found = this.sonnetRhymes(parts[parts.length - 1], mood);
         if (found.length) rhymeWords.set(rhyme, found);
       }
     }

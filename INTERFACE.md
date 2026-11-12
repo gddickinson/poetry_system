@@ -23,7 +23,8 @@ site (JS port of the generator and prosody code) live in `web/`.
   - `generate_haiku(mood)` -- 5-7-5 syllable haiku
   - `generate_tanka(mood)` -- 5-7-5-7-7 tanka (built like generate_haiku)
   - `generate_free_verse(num_lines, mood)` -- variable-length free verse
-  - `generate_sonnet(mood)` -- 14 lines, ABABCDCDEFEFGG end-word rhymes where they fit
+  - `generate_sonnet(mood)` -- 14 lines, ABABCDCDEFEFGG end-word rhymes where they fit; rhymes from
+    `_sonnet_rhymes(word, mood)`: mood list, then whole vocabulary, then the CMU dictionary
   - `generate_line(syllables, mood, end_word, line_type)` -- single line
   - moods: the vocabulary categories nature, emotion, abstract, sensory (others act as no mood)
 

@@ -95,3 +95,29 @@ def test_generate_tanka_five_lines_within_syllables(generator):
             assert line.strip() and sum(count_syllables(w) for w in line.split()) <= target, (seed, line)
     random.seed(1)
     assert len(generator.generate_tanka(mood='nature').split('\n')) == 5
+
+
+def test_sonnet_rhymes_prefer_the_vocabulary(generator):
+    """Sonnet rhymes came from the whole CMU dictionary, so lines ended on words like 'grieme', 'mcright' or
+    'flickr'. Rhymes now come from the mood's list, then the whole vocabulary, and the dictionary only when the
+    vocabulary has none."""
+    import vocabulary
+    vocab = {w for ws in vocabulary.get_all_words().values() for w in ws}
+    # 'light' has vocabulary rhymes; every candidate is a vocabulary word
+    assert generator._sonnet_rhymes('light') == ['night', 'delight', 'fright', 'might', 'bright']
+    # the mood's own list comes first when it has a rhyme
+    emotion = set(vocabulary.get_all_emotion_words())
+    assert set(generator._sonnet_rhymes('light', mood='emotion')) == {'delight', 'fright', 'might'} <= emotion
+    # no vocabulary rhyme: fall back to the dictionary
+    cmu = ProsodyAnalyzer().get_rhyming_words('ocean')
+    assert cmu and not set(cmu) & vocab and generator._sonnet_rhymes('ocean') == cmu
+    # in generated sonnets, an end word outside the vocabulary only appears when its partner had no vocabulary rhyme
+    for seed in range(30):
+        random.seed(seed)
+        lines = generator.generate_sonnet().split('\n')
+        firsts = {}
+        for i, letter in enumerate('ABABCDCDEFEFGG'):
+            end = lines[i].split()[-1]
+            if letter in firsts and end not in vocab and end not in ('gentle', 'oh', 'wind', 'breeze'):
+                assert not set(ProsodyAnalyzer().get_rhyming_words(firsts[letter])) & vocab, (seed, end)
+            firsts.setdefault(letter, end)
