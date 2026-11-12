@@ -1,9 +1,7 @@
 // Node test: the JS ports (pyrandom.js, prosody_engine.js, generator_engine.js) reproduce the Python exactly on
-// tests/fixtures/poem_fixture.json (written by scripts/make_poem_fixture.py). The CMU data comes from the same Python
-// export the site uses (`python scripts/make_poem_fixture.py --cmu-stdout`; set PYTHON to choose the interpreter).
-// Run: node web/static/engine.test.mjs
+// tests/fixtures/poem_fixture.json (written by scripts/make_poem_fixture.py), which also carries the slice of the CMU
+// export these cases use. Reads only that JSON (no Python needed). Run: node web/static/engine.test.mjs
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -14,9 +12,7 @@ import { PoetryGenerator } from './generator_engine.js';
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..', '..');
 const fx = JSON.parse(readFileSync(join(root, 'tests', 'fixtures', 'poem_fixture.json'), 'utf8'));
-const cmu = JSON.parse(execFileSync(process.env.PYTHON || 'python3', ['-W', 'ignore', join(root, 'scripts', 'make_poem_fixture.py'), '--cmu-stdout'],
-  { cwd: root, maxBuffer: 64 << 20, encoding: 'utf8' }));
-loadCmu(cmu);
+loadCmu(fx.cmu);
 
 let n = 0;
 const check = (got, want, msg) => { assert.deepEqual(got, want, msg); n++; };

@@ -2,9 +2,10 @@
 
 Covers CPython `random` (seed, random, randint, choice, sample), syllable counts, rhyme schemes, stress patterns and
 seeded poems from PoetryGenerator for every form and mood. tests/test_web.py checks the file is current and runs the
-node test (web/static/engine.test.mjs) against it.
+node test (web/static/engine.test.mjs) against it. The fixture carries the slice of the CMU export (web/cmu_data.py)
+that these cases touch, so the node test needs only this JSON file, never Python.
 
-Run: python scripts/make_poem_fixture.py [--cmu-stdout]
+Run: python scripts/make_poem_fixture.py
 """
 import json
 import random
@@ -51,13 +52,41 @@ def poem_cases():
     return out
 
 
+def cmu_subset(texts):
+    """Rows of cmu_compact() needed to reproduce every lookup the fixture cases make, in dictionary order.
+
+    Words: every token of the texts (as written, lower-cased and punctuation-stripped). Rhyme groups: every row whose
+    rhyming part belongs to one of those words, so rhymes() lists are complete; plus every pronunciation of the words
+    in those groups (a sonnet may count the syllables of a rhyme it then does not use).
+    """
+    import pronouncing
+    from core.prosody import clean_word
+    pronouncing.init_cmu()
+    words = set()
+    for t in texts:
+        for w in t.split():
+            words.update({w, w.lower(), clean_word(w)})
+    words = {w.lower() for w in words}
+    rps = {pronouncing.rhyming_part(p) for w in words for p in pronouncing.phones_for_word(w)}
+    group_words = {w for w, p in pronouncing.pronunciations if pronouncing.rhyming_part(p) in rps}
+    keep = words | group_words
+    full = cmu_compact()
+    rows = [r for r in full["entries"].split("|") if r.split(" ", 1)[0] in keep]
+    used = sorted({int(r.rsplit(" ", 1)[1], 16) for r in rows})
+    remap = {old: new for new, old in enumerate(used)}
+    rows = [f"{w} {st} {remap[int(i, 16)]:x}" for w, st, i in (r.split(" ") for r in rows)]
+    return {"rp": [full["rp"][i] for i in used], "entries": "|".join(rows), "count": len(rows)}
+
+
 def build():
     vocab = poems.vocabulary_info()
     words = sorted({w for ws in vocab.values() for w in ws}) + EXTRA_WORDS
     generated = poem_cases()
     texts = EXTRA_POEMS + [p["text"] for p in samples.quoted_poems() + samples.readme_example()] \
         + [p["text"] for p in generated[::5]]
+    every_text = texts + [p["text"] for p in generated] + words
     return {
+        "cmu": cmu_subset(every_text),
         "vocabulary": vocab,
         "rng": rng_cases(),
         "syllables": {w: count_syllables(w) for w in words},
@@ -68,9 +97,6 @@ def build():
 
 
 def main():
-    if "--cmu-stdout" in sys.argv:
-        sys.stdout.write(json.dumps(cmu_compact(), separators=(",", ":")))
-        return
     FIXTURE.parent.mkdir(parents=True, exist_ok=True)
     data = build()
     FIXTURE.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")) + "\n")

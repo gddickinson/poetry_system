@@ -2,7 +2,6 @@
 
 Run: python -m pytest -q tests/test_web.py
 """
-import os
 import shutil
 import subprocess
 import sys
@@ -50,8 +49,7 @@ def test_static_assets_referenced_exist():
 def test_js_engine():
     tests = sorted(STATIC.glob("*.test.mjs"))
     for t in tests:
-        env = {**os.environ, "PYTHON": sys.executable}  # the node test reads the CMU export via this Python
-        r = subprocess.run(["node", str(t)], capture_output=True, text=True, env=env)
+        r = subprocess.run(["node", str(t)], capture_output=True, text=True)
         assert r.returncode == 0, r.stdout + r.stderr
 
 
@@ -92,6 +90,7 @@ def test_samples_come_from_repo():
 def test_fixture_is_current():
     """tests/fixtures/poem_fixture.json matches the Python code (regenerate: python scripts/make_poem_fixture.py)."""
     import json
+    pytest.importorskip("pronouncing")
     sys.path.insert(0, str(ROOT / "scripts"))
     import make_poem_fixture
     saved = json.loads(make_poem_fixture.FIXTURE.read_text())

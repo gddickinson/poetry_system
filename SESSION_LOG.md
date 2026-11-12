@@ -42,4 +42,6 @@ whole CMU dictionary (can end lines on obscure words); restrict to the vocabular
   check). Shared venv: `pytest tests` 24 passed, 19 skipped, 0 errors; spaCy venv: 43 passed.
 - Fixture regenerated (126 poems); node test 768 checks identical; 15/15 gallery samples recreated in the browser;
   screenshots.py ok on static site and local app, 0px phone overflow.
+- Fix: the node test now reads only tests/fixtures/poem_fixture.json (which carries the CMU rows it needs, 20,857 of
+  135,166) instead of spawning Python; `core/__init__` imports the analyzer lazily, so `core.prosody` loads without spaCy.
 - Still open for George: limit sonnet rhymes to the vocabulary?
